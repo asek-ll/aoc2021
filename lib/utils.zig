@@ -32,3 +32,85 @@ pub fn parseNum(content: []const u8, s: u64, x: *i32) u64 {
     }
     return i;
 }
+
+pub fn BinaryHeap(comptime T: type, comptime maxSize: usize, comptime cmp: fn (void, T, T) bool) type {
+    return struct {
+        const Self = @This();
+
+        data: [maxSize]T,
+        size: usize = 0,
+
+        pub fn push(self: *Self, val: T) void {
+            if (self.size == self.data.len) {
+                return;
+            }
+            self.siftUp(self.size, val);
+            self.size += 1;
+        }
+
+        fn siftUp(self: *Self, i: u64, x: T) void {
+            var k = i;
+            while (true) {
+                if (k > 0) {
+                    var parent = (k - 1) >> 1;
+                    var e: T = self.data[parent];
+                    if (cmp({}, x, e)) {
+                        self.data[k] = e;
+                        k = parent;
+                        continue;
+                    }
+                }
+
+                self.data[k] = x;
+                return;
+            }
+        }
+
+        pub fn poll(self: *Self) ?T {
+            if (self.size == 0) {
+                return null;
+            }
+
+            var result = self.data[0];
+            self.size -= 1;
+
+            var el = self.data[self.size];
+            self.siftDown(0, el);
+
+            return result;
+        }
+
+        fn siftDown(self: *Self, i: u64, x: T) void {
+            var half = self.size >> 1;
+            var k = i;
+
+            while (k < half) {
+                var child = (k << 1) + 1;
+                var c = self.data[child];
+                var right = child + 1;
+
+                if (right < self.size and cmp({}, c, self.data[right])) {
+                    child = right;
+                    c = self.data[right];
+                }
+
+                if (cmp({}, x, c)) {
+                    break;
+                }
+
+                self.data[k] = c;
+                k = child;
+            }
+
+            self.data[k] = x;
+        }
+
+        pub fn peek(self: *Self) ?T {
+            if (self.size == 0) {
+                return null;
+            }
+
+            return self.data[0];
+        }
+    };
+}
