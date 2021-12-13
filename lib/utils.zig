@@ -114,3 +114,32 @@ pub fn BinaryHeap(comptime T: type, comptime maxSize: usize, comptime cmp: fn (v
         }
     };
 }
+
+pub fn RingStack(comptime T: type, comptime size: u64) type {
+    return struct {
+        queue: [size]T,
+        writeIdx: u64,
+        readIdx: u64,
+
+        const Self = @This();
+
+        pub fn push(self: *Self, i: T) void {
+            self.queue[self.writeIdx] = i;
+            self.writeIdx = (self.writeIdx + 1) % size;
+        }
+
+        pub fn pop(self: *Self) T {
+            var pair = self.queue[self.readIdx];
+            self.readIdx = (self.readIdx + 1) % size;
+            return pair;
+        }
+
+        pub fn isEmpty(self: *Self) bool {
+            return self.readIdx == self.writeIdx;
+        }
+
+        pub fn reset(self: *Self) void {
+            self.readIdx = self.writeIdx;
+        }
+    };
+}
