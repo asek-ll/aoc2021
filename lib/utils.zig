@@ -143,3 +143,36 @@ pub fn RingStack(comptime T: type, comptime size: u64) type {
         }
     };
 }
+
+pub fn List(comptime T: type, comptime maxSize: usize) type {
+    return struct {
+        data: [maxSize]T,
+        size: usize,
+
+        const Self = @This();
+
+        pub fn create(data: [maxSize]T) Self {
+            return Self{
+                .data = data,
+                .size = 0,
+            };
+        }
+
+        pub fn add(self: *Self, item: T) void {
+            if (self.size < maxSize) {
+                self.data[self.size] = item;
+                self.size += 1;
+            }
+        }
+
+        pub fn reset(self: *Self) void {
+            self.size = 0;
+        }
+
+        pub fn forEach(self: Self, comptime action: fn (T) void) void {
+            for (self.data[0..self.size]) |item| {
+                action(item);
+            }
+        }
+    };
+}
