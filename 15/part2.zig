@@ -27,7 +27,7 @@ fn scaleFive(f: [][]u4) [][]u4 {
     return p1.field[0..(mY * 5)];
 }
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !u64 {
+pub fn solve(content: []const u8, allocator: *std.mem.Allocator) ?u64 {
     var f = scaleFive(p1.parse(content));
-    return try p1.sym(f, allocator);
+    return p1.sym(f, allocator.*) catch null;
 }

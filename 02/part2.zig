@@ -30,10 +30,9 @@ pub fn parseAndNextState(c: []const u8, s: u64, delta: *[3]i32) u64 {
     return i;
 }
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !i32 {
+pub fn solve(content: []const u8, _: *std.mem.Allocator) !i32 {
     var i: u64 = 0;
     var m = [3]i32{ 0, 0, 0 };
-    var aim: i32 = 0;
     while (i < content.len) {
         i = parseAndNextState(content, i, &m) + 1;
     }

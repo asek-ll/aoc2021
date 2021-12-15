@@ -50,7 +50,7 @@ fn traverse(visited: Visited, currentIdx: Id, endIdx: Id, rels: [][]Id) u64 {
     return result;
 }
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !u64 {
+pub fn solve(content: []const u8, _: *std.mem.Allocator) !u64 {
     var rels = p1.parse(content);
     var sidx = p1.findLabel("start");
     var eidx = p1.findLabel("end");

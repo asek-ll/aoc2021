@@ -1,6 +1,76 @@
 const std = @import("std");
 const os = std.os;
 const isDigit = std.ascii.isDigit;
+const print = std.debug.print;
+
+fn solutionType(comptime T: type) type {
+    return fn (c: []const u8, a: *std.mem.Allocator) ?T;
+}
+
+fn OptionPrinter(comptime T: type) type {
+    return struct {
+        pub fn print(comptime format: []const u8, val: T) void {
+            if (val) |p| {
+                std.debug.print(format, .{p});
+            }
+        }
+    };
+}
+
+fn ErrorUnionPrinter(comptime T: type) type {
+    return struct {
+        pub fn print(comptime format: []const u8, val: T) void {
+            if (val) |p| {
+                std.debug.print(format, .{p});
+            } else |err| {
+                std.debug.print("Error: {e}\n", .{err});
+            }
+        }
+    };
+}
+
+fn ResultProcessor(comptime resultType: type) type {
+    return switch (@typeInfo(resultType)) {
+        .Optional => {
+            return OptionPrinter(resultType);
+        },
+        .ErrorUnion => {
+            return ErrorUnionPrinter(resultType);
+        },
+        else => {
+            @compileError("Unable to print type '" ++ @typeName(resultType) ++ "'");
+        },
+    };
+}
+
+pub fn Runner(comptime part1: anytype, comptime part2: anytype) type {
+    const resultType1 = @typeInfo(@TypeOf(part1)).Fn.return_type.?;
+    const ResultProcessorType1 = ResultProcessor(resultType1);
+
+    const resultType2 = @typeInfo(@TypeOf(part2)).Fn.return_type.?;
+    const ResultProcessorType2 = ResultProcessor(resultType2);
+
+    return struct {
+        pub fn run() !void {
+            var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+            defer arena.deinit();
+
+            var allocator = arena.allocator();
+
+            const args = try std.process.argsAlloc(allocator);
+            defer std.process.argsFree(allocator, args);
+
+            for (args[1..args.len]) |c| {
+                print("Input file: {s}\n", .{c});
+                const content = try readFile(&allocator, c);
+
+                ResultProcessorType1.print("Part 1: {d}\n", part1(content, &allocator));
+
+                ResultProcessorType2.print("Part 2: {d}\n", part2(content, &allocator));
+            }
+        }
+    };
+}
 
 pub fn readFile(allocator: *std.mem.Allocator, path: []const u8) ![]u8 {
     var file = try os.open(path, 0, 0);

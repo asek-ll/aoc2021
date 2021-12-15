@@ -34,7 +34,7 @@ pub fn parse(content: []const u8) [][4]i32 {
     return buf[0..len];
 }
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !i32 {
+pub fn solve(content: []const u8, _: *std.mem.Allocator) !i32 {
     var data = parse(content);
     var field: [1000][1000]u9 = undefined;
     for (field) |r, i| {
@@ -42,7 +42,7 @@ pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !i32 {
             field[i][j] = 0;
         }
     }
-    for (data) |d, n| {
+    for (data) |d| {
         if (d[0] == d[2]) {
             var from = d[1];
             var to = d[3];

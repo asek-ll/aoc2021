@@ -143,7 +143,7 @@ pub fn debug() void {
     print("\n", .{});
 }
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !u64 {
+pub fn solve(content: []const u8, _: *std.mem.Allocator) !u64 {
     parse(content, true);
     return plen;
 }

@@ -43,14 +43,14 @@ const Step = struct {
     cost: u64,
 };
 
-fn compareStep(a: Step, b: Step) bool {
-    return a.cost < b.cost;
+fn compareStep(a: Step, b: Step) Order {
+    return std.math.order(a.cost, b.cost);
 }
 
-const PQ = std.PriorityQueue(Step);
+const PQ = std.PriorityQueue(Step, compareStep);
 
-pub fn sym(f: [][]u4, allocator: *std.mem.Allocator) !u64 {
-    var q = PQ.init(allocator, compareStep);
+pub fn sym(f: [][]u4, allocator: std.mem.Allocator) !u64 {
+    var q = PQ.init(allocator);
     const pathes = [_][2]i2{
         [_]i2{ -1, 0 },
         [_]i2{ 1, 0 },
@@ -88,7 +88,7 @@ pub fn sym(f: [][]u4, allocator: *std.mem.Allocator) !u64 {
     return temp[lr][f[lr].len - 1] - temp[0][0];
 }
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !u64 {
+pub fn solve(content: []const u8, allocator: *std.mem.Allocator) ?u64 {
     var f = parse(content);
-    return try sym(f, allocator);
+    return sym(f, allocator.*) catch null;
 }

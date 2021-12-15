@@ -3,7 +3,7 @@ const u = @import("utils");
 const print = std.debug.print;
 const p1 = @import("part1.zig");
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !u64 {
+pub fn solve(content: []const u8, _: *std.mem.Allocator) !u64 {
     p1.parse(content);
     var i: u8 = 40;
     while (i > 0) {

@@ -41,7 +41,7 @@ pub fn isLowest(field: [][]u4, row: []u4, ri: u64, ci: u64, val: u4) bool {
     return true;
 }
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !u64 {
+pub fn solve(content: []const u8, _: *std.mem.Allocator) !u64 {
     var field = parse(content);
     var result: u64 = 0;
     for (field) |row, ri| {

@@ -88,8 +88,8 @@ pub fn sym() u64 {
 }
 
 fn debug() void {
-    for (data) |r, i| {
-        for (r) |v, j| {
+    for (data) |r| {
+        for (r) |v| {
             print("{d}", .{v});
         }
         print("\n", .{});
@@ -97,8 +97,8 @@ fn debug() void {
     print("\n", .{});
 }
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !u64 {
-    var parsed = parse(content);
+pub fn solve(content: []const u8, _: *std.mem.Allocator) !u64 {
+    _ = parse(content);
     var i: u64 = 100;
     var result: u64 = 0;
     while (i > 0) {

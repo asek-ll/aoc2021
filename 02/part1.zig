@@ -29,7 +29,7 @@ pub fn parseMove(c: []const u8, s: u64, delta: *[2]i32) u64 {
     return i;
 }
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !i32 {
+pub fn solve(content: []const u8, _: *std.mem.Allocator) !i32 {
     var i: u64 = 0;
     var hd = [2]i32{ 0, 0 };
     var m = [2]i32{ 0, 0 };

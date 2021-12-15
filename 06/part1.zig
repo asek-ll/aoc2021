@@ -28,7 +28,7 @@ pub fn simulate(data: *[9]u64) void {
     }
 }
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !i32 {
+pub fn solve(content: []const u8, _: *std.mem.Allocator) !i32 {
     var data = [_]u64{0} ** 9;
     parse(content, &data);
     var i: u64 = 80;

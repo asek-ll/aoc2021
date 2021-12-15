@@ -2,7 +2,7 @@ const std = @import("std");
 const u = @import("utils");
 const print = std.debug.print;
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !u64 {
+pub fn solve(content: []const u8, _: *std.mem.Allocator) !u64 {
     var i: u64 = 0;
     var j: u64 = 0;
     var result: u64 = 0;

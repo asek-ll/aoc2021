@@ -84,7 +84,7 @@ fn getScore(str: []const u8) u64 {
     return 0;
 }
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !u64 {
+pub fn solve(content: []const u8, _: *std.mem.Allocator) !u64 {
     var i: u64 = 0;
     var len: u64 = 0;
     var score: u64 = 0;

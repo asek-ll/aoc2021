@@ -82,7 +82,7 @@ fn expand(field: [][]u4, ri: u7, ci: u7) u64 {
     return size;
 }
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !u64 {
+pub fn solve(content: []const u8, _: *std.mem.Allocator) !u64 {
     var field = p1.parse(content);
     heap.size = 0;
 

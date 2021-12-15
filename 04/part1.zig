@@ -24,7 +24,7 @@ var boards = [_][5][5]u32{
     },
 } ** 1000;
 
-pub fn parse(content: []const u8, allocator: *std.mem.Allocator, input: *Input) void {
+pub fn parse(content: []const u8, _: *std.mem.Allocator, input: *Input) void {
     var i: u64 = 0;
     var j: u64 = 0;
     var buf: u32 = 0;

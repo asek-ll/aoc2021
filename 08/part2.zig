@@ -80,7 +80,7 @@ fn detect(data: [14][]const u8) u64 {
     return result;
 }
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !u64 {
+pub fn solve(content: []const u8, _: *std.mem.Allocator) !u64 {
     var buf = [_][]const u8{&[_]u8{}} ** 14;
 
     var i: u64 = 0;
@@ -90,7 +90,6 @@ pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !u64 {
 
     while (i < content.len) {
         if (content[i] == ' ' or content[i] == '\n') {
-            var len = i - j;
             buf[idx] = content[j..i];
             idx += 1;
             j = i + 1;

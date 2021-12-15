@@ -38,7 +38,7 @@ fn getFueld(data: []u64, level: u64) u64 {
     return fuel;
 }
 
-pub fn solve(content: []const u8, allocator: *std.mem.Allocator) !u64 {
+pub fn solve(content: []const u8, _: *std.mem.Allocator) !u64 {
     var data = parse(content);
     sort.sort(u64, data, {}, comptime sort.asc(u64));
     var median = getMedian(data);
