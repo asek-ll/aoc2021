@@ -246,3 +246,51 @@ pub fn List(comptime T: type, comptime maxSize: usize) type {
         }
     };
 }
+const ReaderError = error{
+    MismatchingChars,
+};
+
+pub const Reader = struct {
+    data: []const u8,
+    pos: u64,
+
+    const Self = @This();
+
+    pub fn init(bytes: []const u8) Self {
+        return .{
+            .data = bytes,
+            .pos = 0,
+        };
+    }
+
+    fn readUnsignedInt(self: *Self, comptime T: type) T {
+        var x: T = 0;
+        while (self.pos < self.data.len and isDigit(self.data[self.pos])) {
+            x = x * 10 + (self.data[self.pos] - '0');
+            self.pos += 1;
+        }
+        return x;
+    }
+
+    pub fn readInt(self: *Self, comptime T: type) T {
+        var x: T = 0;
+        if (self.pos >= self.data.len) {
+            return x;
+        }
+        if (self.data[self.pos] == '-') {
+            self.pos += 1;
+            return -self.readUnsignedInt(T);
+        }
+        return self.readUnsignedInt(T);
+    }
+
+    pub fn skipChars(self: *Self, pattern: []const u8) ReaderError!void {
+        for (pattern) |p| {
+            if (self.pos < self.data[self.pos] and self.data[self.pos] == p) {
+                self.pos += 1;
+            } else {
+                return ReaderError.MismatchingChars;
+            }
+        }
+    }
+};
