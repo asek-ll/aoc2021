@@ -246,7 +246,7 @@ pub fn List(comptime T: type, comptime maxSize: usize) type {
         }
     };
 }
-const ReaderError = error{
+pub const ReaderError = error{
     MismatchingChars,
 };
 
@@ -263,7 +263,7 @@ pub const Reader = struct {
         };
     }
 
-    fn readUnsignedInt(self: *Self, comptime T: type) T {
+    pub fn readUnsignedInt(self: *Self, comptime T: type) T {
         var x: T = 0;
         while (self.pos < self.data.len and isDigit(self.data[self.pos])) {
             x = x * 10 + (self.data[self.pos] - '0');
@@ -286,11 +286,15 @@ pub const Reader = struct {
 
     pub fn skipChars(self: *Self, pattern: []const u8) ReaderError!void {
         for (pattern) |p| {
-            if (self.pos < self.data[self.pos] and self.data[self.pos] == p) {
+            if (self.pos < self.data.len and self.data[self.pos] == p) {
                 self.pos += 1;
             } else {
                 return ReaderError.MismatchingChars;
             }
         }
+    }
+
+    pub fn peek(self: Self) u8 {
+        return self.data[self.pos];
     }
 };
