@@ -263,6 +263,10 @@ pub const Reader = struct {
         };
     }
 
+    pub fn isEmpty(self: Self) bool {
+        return self.pos >= self.data.len;
+    }
+
     pub fn readUnsignedInt(self: *Self, comptime T: type) T {
         var x: T = 0;
         while (self.pos < self.data.len and isDigit(self.data[self.pos])) {
