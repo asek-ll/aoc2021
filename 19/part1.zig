@@ -61,6 +61,15 @@ const RotationMatrix = struct {
             },
         });
     }
+
+    pub fn debug(self: Self) void {
+        for (self.data) |r| {
+            for (r) |v| {
+                print("{d} ", .{v});
+            }
+            print("\n", .{});
+        }
+    }
 };
 
 const BeaconsView = struct {
@@ -92,7 +101,53 @@ const BeaconsView = struct {
         self.shift[1] += dv[1];
         self.shift[2] += dv[2];
     }
+    pub fn debug(self: Self) void {
+        print("Shift: {d},{d},{d}, Rotation: \n", .{
+            self.shift[0],
+            self.shift[1],
+            self.shift[2],
+        });
+        self.rot.debug();
+    }
 };
+
+fn initRots() []RotationMatrix {
+    var rots = [_]RotationMatrix{RotationMatrix.init([3][3]i32{
+        [3]i32{ 0, 0, 0 },
+        [3]i32{ 0, 0, 0 },
+        [3]i32{ 0, 0, 0 },
+    })} ** 24;
+    var i: u64 = 0;
+    var j: u64 = 0;
+    var k: u64 = 0;
+    const d = [_]i32{ -1, 1 };
+    var idx: u64 = 0;
+    while (i < 3) : (i += 1) {
+        for (d) |s1| {
+            j = 0;
+            while (j < 3) : (j += 1) {
+                if (j != i) {
+                    for (d) |s2| {
+                        k = 0;
+                        while (k < 3) : (k += 1) {
+                            if (k != i and k != j) {
+                                // for (d) |s3| {
+                                rots[idx].data[0][i] = s1;
+                                rots[idx].data[1][j] = s2;
+                                // rots[idx].data[2][k] = s3;
+                                idx += 1;
+                                // }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return &rots;
+}
+
+const ROTS = initRots();
 
 const R0 = RotationMatrix.init([3][3]i32{
     [3]i32{ 1, 0, 0 },
@@ -154,6 +209,12 @@ pub fn parse(reader: *Reader, a: Allocator) !Scanners {
 }
 
 fn getShiftWithMaxClash(base: BeaconMap, other: *BeaconsView) u64 {
+    print("rot:\n", .{});
+    other.rot.debug();
+    for (other.items.items) |_, i| {
+        const b = other.get(i);
+        print("bv: {d},{d},{d}\n", .{ b[0], b[1], b[2] });
+    }
     // print("compare map and view !!\n", .{});
 
     var max: u64 = 0;
@@ -246,8 +307,9 @@ fn findBestRotation(base: BeaconMap, other: Beacons) BeaconsView {
 
 fn mergeBeacons(map: *BeaconMap, other: Beacons) !void {
     const view = findBestRotation(map.*, other);
-    for (view.items.items) |b| {
-        try map.put(b, 0);
+    view.debug();
+    for (view.items.items) |_, i| {
+        try map.put(view.get(i), 0);
     }
 }
 
@@ -260,8 +322,13 @@ pub fn solve(content: []const u8, a: *std.mem.Allocator) !u64 {
         try map.put(b, 0);
     }
 
-    for (scanners.items[1..]) |s| {
+    for (scanners.items[1..2]) |s| {
         try mergeBeacons(&map, s);
+    }
+
+    for (ROTS) |r| {
+        print("_\n", .{});
+        r.debug();
     }
 
     // try mergeBeacons(&map, scanners.items[1]);
