@@ -288,6 +288,15 @@ pub const Reader = struct {
         return self.readUnsignedInt(T);
     }
 
+    pub fn readChar(self: *Self) ?u8 {
+        if (self.pos >= self.data.len) {
+            return null;
+        }
+        const x = self.data[self.pos];
+        self.pos += 1;
+        return x;
+    }
+
     pub fn skipChars(self: *Self, pattern: []const u8) ReaderError!void {
         for (pattern) |p| {
             if (self.pos < self.data.len and self.data[self.pos] == p) {
