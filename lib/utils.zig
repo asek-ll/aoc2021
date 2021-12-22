@@ -297,11 +297,27 @@ pub const Reader = struct {
         return x;
     }
 
+    pub fn trySkip(self: *Self, pattern: []const u8) bool {
+        var x = self.pos;
+        for (pattern) |p| {
+            if (x < self.data.len and self.data[x] == p) {
+                x += 1;
+            } else {
+                return false;
+            }
+        }
+        self.pos = x;
+        return true;
+    }
+
     pub fn skipChars(self: *Self, pattern: []const u8) ReaderError!void {
         for (pattern) |p| {
             if (self.pos < self.data.len and self.data[self.pos] == p) {
                 self.pos += 1;
             } else {
+                if (self.pos < self.data.len) {
+                    print("Mismatch char, expect '{c}' found '{c}'\n", .{ p, self.data[self.pos] });
+                }
                 return ReaderError.MismatchingChars;
             }
         }
