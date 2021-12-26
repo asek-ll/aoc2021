@@ -96,9 +96,15 @@ pub fn readFile(allocator: *std.mem.Allocator, path: []const u8) ![]u8 {
 pub fn parseNum(content: []const u8, s: u64, x: *i32) u64 {
     var i = s;
     x.* = 0;
+    if (content[s] == '-') {
+        i += 1;
+    }
     while (i < content.len and isDigit(content[i])) {
         x.* = x.* * 10 + (content[i] - '0');
         i += 1;
+    }
+    if (content[s] == '-') {
+        x.* *= -1;
     }
     return i;
 }
