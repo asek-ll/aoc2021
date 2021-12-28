@@ -7,8 +7,8 @@ pub fn build(b: *Builder) void {
     b.installArtifact(exe);
 
     const run_cmd = exe.run();
-    run_cmd.addArg("sample.txt");
-    // run_cmd.addArg("input.txt");
+    // run_cmd.addArg("sample.txt");
+    run_cmd.addArg("input.txt");
 
     b.default_step.dependOn(&run_cmd.step);
 }
